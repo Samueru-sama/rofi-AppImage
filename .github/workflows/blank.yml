@@ -18,7 +18,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install libfuse2
-        sudo apt install meson libgtk-3-dev itstool gettext flex automake bison libxau-dev libxcb-util-dev libxcb1-dev libxcb-xrm-dev libxcb-xkb-dev
+        sudo apt install meson libgtk-3-dev itstool gettext flex automake bison libxau-dev libxcb-util-dev libxcb1-dev libxcb-xrm-dev libxcb-xkb-dev libxkbcommon-x11-dev
         wget https://raw.githubusercontent.com/Samueru-sama/rofi-AppImage/main/rofi-appimage.sh
         chmod a+x ./rofi-appimage.sh
         ./rofi-appimage.sh
