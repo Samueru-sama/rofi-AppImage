@@ -11,8 +11,8 @@ mkdir -p ./"$APP" ./"$APP/$APPDIR"/usr/bin ./"$APP/$APPDIR"/usr/share/rofi/theme
 # DOWNLOAD AND BUILD ZENITY
 version=$(wget -q https://api.github.com/repos/"$SITE"/releases -O - | grep browser_download_url | grep -i tar.gz | cut -d '"' -f 4 | head -1)
 wget "$version" && tar fx ./*tar* || exit 1
-cd ./rofi-* && meson --prefix /usr . build && meson compile -C build || exit 1 # This builds fine in archlinux but can't on ubuntu
-#cd ./rofi-* && meson --prefix /usr . build && cd ./build && meson compile && cd .. || exit 1 
+cd ./rofi-* && meson --prefix /usr . build && meson compile -C build || exit 1 # This builds fine in archlinux and ubuntu-latest but not ubuntu 20.04
+
 
 # PREPARE APPIMAGE FILES
 cd .. && mv ./rofi-*/build/rofi ./"$APPDIR"/usr/bin && mv ./rofi-*/script/* ./"$APPDIR"/usr/bin && mv ./rofi-*/themes ./"$APPDIR"/usr/share/rofi && mv ./rofi-*/data/* ./"$APPDIR"
