@@ -17,7 +17,7 @@ jobs:
     - name: build
       run: |
         sudo apt update
-        sudo apt install libfuse2 libxcb-xinerama0-dev
+        sudo apt install libfuse2 libxcb-xinerama0-dev libstartup-notification0-dev
         sudo apt install meson libgtk-3-dev itstool gettext flex automake bison libxau-dev libxcb-util1
         sudo apt install libxcb1-dev libxcb-xrm-dev libxcb-xkb-dev libxkbcommon-x11-dev libxcb-ewmh-dev
         sudo apt install libpangocairo-1.0-0 libxcb-util-dev libxcb-icccm4-dev libxcb-cursor-dev libxcb-randr0-dev
