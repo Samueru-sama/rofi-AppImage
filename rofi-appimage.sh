@@ -27,7 +27,7 @@ cat >> ./AppRun << 'EOF'
 CURRENTDIR="$(readlink -f "$(dirname "$0")")"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 export PATH="$PATH:$CURRENTDIR/bin"
-export XDG_DATA_DIRS="$CURRENTDIR/share:$XDG_DATA_DIRS"
+export XDG_DATA_DIRS="$CURRENTDIR/share:/usr/share:$XDG_DATA_DIRS"
 
 if [ ! -d "$DATADIR/rofi/themes" ]; then
 	if [ "$1" = "--install-themes" ]; then
