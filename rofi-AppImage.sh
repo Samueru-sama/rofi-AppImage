@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -u
 APP=rofi
 APPDIR="$APP.AppDir"
 SITE="davatorium/rofi"
