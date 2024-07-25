@@ -11,12 +11,9 @@ mkdir -p ./"$APP/$APPDIR" && cd ./"$APP/$APPDIR" || exit 1
 
 # DOWNLOAD AND BUILD ROFI
 CURRENTDIR="$(dirname "$(readlink -f "$0")")" # DO NOT MOVE THIS
-version=$(wget -q https://api.github.com/repos/"$SITE"/releases -O - | sed 's/"/ /g; s/ /\n/g' | grep -o 'https.*rofi.*releases.*rofi.*tar.gz$' | head -1)
-wget "$version" && tar fx ./*tar* && cd ./rofi-* && meson --prefix "$CURRENTDIR/usr" . build && meson compile -C build && meson install -C build || exit 1
-cd .. && sed -i '44,68d; s/DIRS=\${XDG_DATA_DIRS}//' ./usr/bin/rofi-theme-selector && rm -rf ./rofi-*
-
-# ROFI EMOJI DOESN'T COMPILE!!!
-#git clone https://github.com/Mange/rofi-emoji.git && cd ./rofi-emoji && autoreconf -i && ./configure --prefix="$CURRENTDIR/usr" && make && make install || exit 1
+git clone https://github.com/davatorium/rofi.git && cd ./rofi \
+&& meson --prefix "$CURRENTDIR/usr" . build && meson compile -C build && meson install -C build || exit 1
+cd .. && sed -i '44,68d; s/DIRS=\${XDG_DATA_DIRS}//' ./usr/bin/rofi-theme-selector && rm -rf ./rofi
 
 # DESKTOP & ICON
 echo "Categories=Utility;" >> ./usr/share/applications/rofi.desktop && echo "Categories=Utility;" >> ./usr/share/applications/rofi-theme-selector.desktop
