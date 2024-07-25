@@ -44,7 +44,7 @@ fi
 "$CURRENTDIR/usr/bin/rofi" "$@"
 EOF
 chmod a+x ./AppRun
-APPVERSION=$(echo $version | awk -F / '{print $(NF-1)}')
+APPVERSION=$(./rofi -v | awk '{print $2}')
 
 # MAKE APPIMAGE
 LINUXDEPLOY="https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-static-x86_64.AppImage"
