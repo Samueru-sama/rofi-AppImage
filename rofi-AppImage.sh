@@ -44,19 +44,25 @@ fi
 "$CURRENTDIR/usr/bin/rofi" "$@"
 EOF
 chmod a+x ./AppRun
-APPVERSION=$(./AppRun -v | awk 'FNR==3 {print $2}')
+export VERSION=$(./AppRun -v | awk 'FNR==3 {print $2}')
 
 # MAKE APPIMAGE
 LINUXDEPLOY="https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-static-x86_64.AppImage"
-cd .. && wget "$LINUXDEPLOY" -O linuxdeploy && chmod a+x ./linuxdeploy && ./linuxdeploy --appdir "$APPDIR" --executable "$APPDIR"/usr/bin/"$EXEC" --output appimage
+cd .. && wget "$LINUXDEPLOY" -O linuxdeploy && chmod a+x ./linuxdeploy \
+	&& ./linuxdeploy --appdir "$APPDIR" --executable "$APPDIR"/usr/bin/"$EXEC" --output appimage
 
 # LIBFUSE3
-APPIMAGETOOL=$(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | sed 's/[()",{} ]/\n/g' | grep -oi 'https.*continuous.*tool.*x86_64.*mage$' | head -1)
+APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
 
 [ -n "$APPDIR" ] && ls *AppImage && rm -rf ./"$APPDIR" || exit 1
-./*AppImage --appimage-extract && mv ./squashfs-root ./"$APPDIR" && rm -f ./*AppImage && wget -q "$APPIMAGETOOL" -O ./appimagetool && chmod a+x ./appimagetool || exit 1
+./*AppImage --appimage-extract && mv ./squashfs-root ./"$APPDIR" && rm -f ./*AppImage || exit 1 
+wget -q "$APPIMAGETOOL" -O ./appimagetool && chmod a+x ./appimagetool || exit 1
 rm -f ./"$APPDIR"/rofi-theme-selector* # Why does this get created?
 
 # Do the thing!
-ARCH=x86_64 VERSION="$APPVERSION" ./appimagetool -s ./"$APPDIR" || exit 1
-[ -n "$APP" ] && mv ./*.AppImage .. && cd .. && rm -rf ./"$APP" && echo "All Done!" || exit 1
+export ARCH=x86_64
+./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 \
+  -u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|rofi-AppImage|continuous|*x86_64.AppImage.zsync" \
+  ./"$APP".AppDir Rofi-"$VERSION"-"$ARCH".AppImage 
+[ -n "$APP" ] && mv ./*.AppImage* .. && cd .. && rm -rf ./"$APP" || exit 1
+echo "All Done!"
