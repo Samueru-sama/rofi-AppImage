@@ -17,7 +17,7 @@ jobs:
     - name: build
       run: |
         sudo apt update
-        sudo apt install python3-pip ninja-build libxcb-keysyms1-dev desktop-file-utils
+        sudo apt install python3-pip ninja-build libxcb-keysyms1-dev desktop-file-utils patchelf
         sudo pip3 install meson
         sudo apt install libfuse2 libxcb-xinerama0-dev libstartup-notification0-dev libxcb-util1 rofi
         sudo apt install libgtk-3-dev itstool gettext flex automake bison libxau-dev libxcb-randr0-dev
