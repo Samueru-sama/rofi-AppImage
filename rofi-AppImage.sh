@@ -51,7 +51,7 @@ cd .. && wget "$LINUXDEPLOY" -O linuxdeploy && chmod a+x ./linuxdeploy \
 	&& ./linuxdeploy --appdir "$APPDIR" --executable "$APPDIR"/usr/bin/"$EXEC"
 
 # hack
-patchelf --set-rpath `/lib:/lib64:/lib/x86_64-linux-gnu:/usr/lib:$ORIGIN/../lib` "$APPDIR"/usr/bin/"$EXEC"
+patchelf --set-rpath '/lib:/lib64:/lib/x86_64-linux-gnu:/usr/lib:$ORIGIN/../lib' "$APPDIR"/usr/bin/"$EXEC"
 
 # LIBFUSE3
 APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
