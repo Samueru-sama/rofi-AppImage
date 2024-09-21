@@ -48,16 +48,13 @@ export VERSION=$(./AppRun -v | awk 'FNR==3 {print $2}')
 # MAKE APPIMAGE
 LINUXDEPLOY="https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-static-x86_64.AppImage"
 cd .. && wget "$LINUXDEPLOY" -O linuxdeploy && chmod a+x ./linuxdeploy \
-	&& ./linuxdeploy --appdir "$APPDIR" --executable "$APPDIR"/usr/bin/"$EXEC" --output appimage
+	&& ./linuxdeploy --appdir "$APPDIR" --executable "$APPDIR"/usr/bin/"$EXEC"
 
 # hack
 patchelf --set-rpath `/lib:/lib64:/lib/x86_64-linux-gnu:/usr/lib:$ORIGIN/../lib` "$APPDIR"/usr/bin/"$EXEC"
 
 # LIBFUSE3
 APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
-
-[ -n "$APPDIR" ] && ls *AppImage && rm -rf ./"$APPDIR" || exit 1
-./*AppImage --appimage-extract && mv ./squashfs-root ./"$APPDIR" && rm -f ./*AppImage || exit 1 
 wget -q "$APPIMAGETOOL" -O ./appimagetool && chmod a+x ./appimagetool || exit 1
 rm -f ./"$APPDIR"/rofi-theme-selector* # Why does this get created?
 
