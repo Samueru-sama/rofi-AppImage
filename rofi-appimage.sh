@@ -90,7 +90,6 @@ cd ..
 # MAKE APPIAMGE WITH FUSE3 COMPATIBLE APPIMAGETOOL
 APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
 wget -q "$APPIMAGETOOL" -O ./appimagetool && chmod a+x ./appimagetool || exit 1
-rm -f ./"$APPDIR"/rofi-theme-selector* # Why does this get created?
 
 ls
 # Do the thing!
