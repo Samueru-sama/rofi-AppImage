@@ -11,22 +11,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    container: artixlinux/artixlinux:latest
+    container: alpine:latest
     steps:
     - uses: actions/checkout@v3
 
     - name: build
       if: always()
       run: |
-        pacman -Syu --noconfirm 
-        pacman -S --noconfirm meson ninja base-devel curl desktop-file-utils git wget musl
-        pacman -S --noconfirm cairo flex freetype2 libjpeg librsvg libx11 libxcb libxdg-basedir \
-          libxft libxkbcommon libxkbcommon-x11 pango startup-notification xcb-util \
-          xcb-util-cursor xcb-util-wm xcb-util-xrm xcb-util-keysyms
-
-        # Artix repos don't have zsyc
-        wget https://london.mirror.pkgbuild.com/extra/os/x86_64/zsync-0.6.2-5-x86_64.pkg.tar.zst
-        pacman -U --noconfirm ./zsync-0.6.2-5-x86_64.pkg.tar.zst
+        apk add build-base meson glib-dev cairo-dev pango-dev libxkbcommon-dev \
+          libxcb-dev gdk-pixbuf-dev xcb-util-dev xcb-util-wm-dev xcb-util-xrm-dev \
+          xcb-util-cursor-dev startup-notification-dev flex bison ronn cppcheck \
+          check-dev xkeyboard-config-dev xcb-util-keysyms-dev desktop-file-utils
 
         chmod +x ./rofi-appimage.sh && ./rofi-appimage.sh
         mkdir dist
