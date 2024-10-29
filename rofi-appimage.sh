@@ -89,7 +89,7 @@ rm -f ./"$APPDIR"/rofi-theme-selector* # Why does this get created?
 
 ls
 # Do the thing!
-./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 \
+./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 22 \
 	-n -u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|rofi-AppImage|continuous|*$ARCH.AppImage.zsync" \
 	./"$APP".AppDir Rofi-"$VERSION"-"$ARCH".AppImage
 [ -n "$APP" ] && mv ./*.AppImage* .. && cd .. && rm -rf ./"$APP" || exit 1
