@@ -57,8 +57,8 @@ DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 export PATH="$CURRENTDIR/bin:$PATH"
 export XDG_DATA_DIRS="$CURRENTDIR/usr/share:/usr/share:$XDG_DATA_DIRS"
 
-GDK_HERE="$(find "$HERE" -type d -regex '.*gdk.*loaders' -print -quit)"
-GDK_LOADER="$(find "$HERE" -type f -regex '.*gdk.*loaders.cache' -print -quit)"
+GDK_HERE="$(find "$CURRENTDIR" -type d -regex '.*gdk.*loaders' -print -quit)"
+GDK_LOADER="$(find "$CURRENTDIR" -type f -regex '.*gdk.*loaders.cache' -print -quit)"
 export GDK_PIXBUF_MODULEDIR="$GDK_HERE"
 export GDK_PIXBUF_MODULE_FILE="$GDK_LOADER"
 
