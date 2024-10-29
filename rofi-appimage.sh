@@ -28,6 +28,7 @@ mv ./usr/bin ./
 wget "$LIB4BN" -O ./lib4bin
 wget "$SHARUN" -O ./sharun
 chmod +x ./lib4bin ./sharun
+ls
 HARD_LINKS=1 ./lib4bin ./bin/*
 rm -f ./lib4bin
 
