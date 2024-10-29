@@ -1,9 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 set -eu
 APP=rofi
 APPDIR="$APP.AppDir"
-SITE="davatorium/rofi"
-EXEC="$APP"
 export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
 APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
@@ -41,8 +39,6 @@ find ./shared/lib/gdk-pixbuf-2.0 -type f -name '*.so*' -exec ldd {} \; \
 find ./shared/lib -type f -regex '.*gdk.*loaders.cache' \
 	-exec sed -i 's|/.*lib.*/gdk-pixbuf.*/.*/loaders/||g' {} \;
 ( cd ./shared/lib && find ./gdk-pixbuf-2.0 -type f -name '*.so*' -exec ln -s {} ./ \; )
-
-
 
 # DESKTOP & ICON
 find ./ -type f -regex ".*/applications/.*\.desktop" -exec cp {} ./ \;
