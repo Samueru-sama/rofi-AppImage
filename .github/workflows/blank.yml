@@ -18,7 +18,7 @@ jobs:
     - name: build
       if: always()
       run: |
-        apk add build-base meson glib-dev cairo-dev pango-dev libxkbcommon-dev \
+        apk add git build-base meson glib-dev cairo-dev pango-dev libxkbcommon-dev \
           libxcb-dev gdk-pixbuf-dev xcb-util-dev xcb-util-wm-dev xcb-util-xrm-dev \
           xcb-util-cursor-dev startup-notification-dev flex bison ronn cppcheck \
           check-dev xkeyboard-config-dev xcb-util-keysyms-dev desktop-file-utils
