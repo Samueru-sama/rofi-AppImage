@@ -74,11 +74,11 @@ if [ ! -d "$DATADIR/rofi/themes" ]; then
 	fi
 fi
 
-if [ -f "$CURRENTDIR/bin/$BIN" ]; then
-	exec "$CURRENTDIR/bin/$BIN" "$@"
-elif [ "$1" = "rofi-theme-selector" ]; then
+if [ "$1" = "rofi-theme-selector" ]; then
 	shift
 	exec "$CURRENTDIR/bin/rofi-theme-selector" "$@"
+elif [ -f "$CURRENTDIR/bin/$BIN" ]; then
+	exec "$CURRENTDIR/bin/$BIN" "$@"
 else
 	exec "$CURRENTDIR/bin/rofi" "$@"
 fi
