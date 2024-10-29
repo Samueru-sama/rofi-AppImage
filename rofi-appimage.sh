@@ -18,7 +18,6 @@ cd ./rofi
 meson --prefix "$CURRENTDIR/usr" . build
 meson compile -C build && meson install -C build
 cd ..
-sed -i '44,68d; s/DIRS=\${XDG_DATA_DIRS}//' ./usr/bin/rofi-theme-selector
 rm -rf ./rofi
 
 # ADD LIBRARIES
@@ -54,8 +53,11 @@ cat >> ./AppRun << 'EOF'
 CURRENTDIR="$(dirname "$(readlink -f "$0")")"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 export PATH="$CURRENTDIR/bin:$PATH"
-export XDG_DATA_DIRS="$CURRENTDIR/usr/share:/usr/share:$XDG_DATA_DIRS"
+[ -z "$XDG_DATA_DIRS" ] && XDG_DATA_DIRS="/usr/local/share:/usr/share"
+export XDG_DATA_DIRS="$DATADIR:$XDG_DATA_DIRS"
 export GIO_MODULE_DIR="$CURRENTDIR"
+BIN="${ARGV0#./}"
+unset ARGV0
 
 GDK_HERE="$(find "$CURRENTDIR" -type d -regex '.*gdk.*loaders' -print -quit)"
 GDK_LOADER="$(find "$CURRENTDIR" -type f -regex '.*gdk.*loaders.cache' -print -quit)"
@@ -73,10 +75,13 @@ if [ ! -d "$DATADIR/rofi/themes" ]; then
 fi
 
 if [ "$1" = "rofi-theme-selector" ]; then
-	"$CURRENTDIR/bin/rofi-theme-selector"
+	shift
+	exec "$CURRENTDIR/bin/rofi-theme-selector" "$@"
+elif [ -f "$CURRENTDIR/bin/$BIN" ]; then
+	exec "$CURRENTDIR/bin/$BIN" "$@"
+else
+	exec "$CURRENTDIR/bin/rofi" "$@"
 fi
-
-exec "$CURRENTDIR/bin/rofi" "$@"
 EOF
 chmod a+x ./AppRun
 export VERSION="$(./AppRun -v | awk 'FNR==1 {print $2; exit}')"
@@ -89,7 +94,7 @@ rm -f ./"$APPDIR"/rofi-theme-selector* # Why does this get created?
 
 ls
 # Do the thing!
-./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 \
+./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 22 \
 	-n -u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|rofi-AppImage|continuous|*$ARCH.AppImage.zsync" \
 	./"$APP".AppDir Rofi-"$VERSION"-"$ARCH".AppImage
 [ -n "$APP" ] && mv ./*.AppImage* .. && cd .. && rm -rf ./"$APP" || exit 1
