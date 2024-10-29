@@ -15,7 +15,7 @@ mkdir -p ./"$APP/$APPDIR" && cd ./"$APP/$APPDIR" || exit 1
 
 # DOWNLOAD AND BUILD ROFI
 CURRENTDIR="$(dirname "$(readlink -f "$0")")" # DO NOT MOVE THIS
-git clone https://github.com/davatorium/rofi.git ./rofi
+git clone --depth 1 "https://github.com/davatorium/rofi.git" ./rofi
 cd ./rofi
 meson --prefix "$CURRENTDIR/usr" . build
 meson compile -C build && meson install -C build
@@ -28,15 +28,16 @@ mv ./usr/bin ./
 wget "$LIB4BN" -O ./lib4bin
 wget "$SHARUN" -O ./sharun
 chmod +x ./lib4bin ./sharun
-ls
 HARD_LINKS=1 ./lib4bin ./bin/*
 rm -f ./lib4bin
 
 # DEPLOY GDK
-GDK_PATH="$(find / -type d -regex ".*/gdk-pixbuf-2.0" -print -quit)"
-cp -r "$GDK_PATH" ./shared/lib
+echo "Deploying gdk..."
+GDK_PATH="$(find /usr/lib -type d -regex ".*/gdk-pixbuf-2.0" -print -quit)"
+cp -rv "$GDK_PATH" ./shared/lib
+echo "Deploying gdk deps..."
 find ./shared/lib/gdk-pixbuf-2.0 -type f -name '*.so*' -exec ldd {} \; \
-	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -f {} ./shared/lib
+	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -vn {} ./shared/lib
 find ./shared/lib -type f -regex '.*gdk.*loaders.cache' \
 	-exec sed -i 's|/.*lib.*/gdk-pixbuf.*/.*/loaders/||g' {} \;
 
@@ -81,6 +82,7 @@ APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continu
 wget -q "$APPIMAGETOOL" -O ./appimagetool && chmod a+x ./appimagetool || exit 1
 rm -f ./"$APPDIR"/rofi-theme-selector* # Why does this get created?
 
+ls
 # Do the thing!
 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 \
 	-n -u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|rofi-AppImage|continuous|*$ARCH.AppImage.zsync" \
