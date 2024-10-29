@@ -40,6 +40,9 @@ find ./shared/lib/gdk-pixbuf-2.0 -type f -name '*.so*' -exec ldd {} \; \
 	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -vn {} ./shared/lib
 find ./shared/lib -type f -regex '.*gdk.*loaders.cache' \
 	-exec sed -i 's|/.*lib.*/gdk-pixbuf.*/.*/loaders/||g' {} \;
+( cd ./shared/lib && find ./gdk-pixbuf-2.0 -type f -name '*.so*' -exec ln -s {} ./ \; )
+
+
 
 # DESKTOP & ICON
 find ./ -type f -regex ".*/applications/.*\.desktop" -exec cp {} ./ \;
