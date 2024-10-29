@@ -18,7 +18,6 @@ cd ./rofi
 meson --prefix "$CURRENTDIR/usr" . build
 meson compile -C build && meson install -C build
 cd ..
-#sed -i '44,68d; s/DIRS=\${XDG_DATA_DIRS}//' ./usr/bin/rofi-theme-selector
 rm -rf ./rofi
 
 # ADD LIBRARIES
@@ -73,10 +72,11 @@ if [ ! -d "$DATADIR/rofi/themes" ]; then
 fi
 
 if [ "$1" = "rofi-theme-selector" ]; then
-	"$CURRENTDIR/bin/rofi-theme-selector"
+	shift
+	exec "$CURRENTDIR/bin/rofi-theme-selector" "$@"
+else
+	exec "$CURRENTDIR/bin/rofi" "$@"
 fi
-
-exec "$CURRENTDIR/bin/rofi" "$@"
 EOF
 chmod a+x ./AppRun
 export VERSION="$(./AppRun -v | awk 'FNR==1 {print $2; exit}')"
