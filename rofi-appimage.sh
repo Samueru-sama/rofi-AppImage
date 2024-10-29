@@ -25,7 +25,8 @@ rm -rf ./rofi
 
 # ADD LIBRARIES
 mv ./usr/bin ./
-wget "$LIB4BN" -O ./lib4bin && wget "$SHARUN" -O ./sharun
+wget "$LIB4BN" -O ./lib4bin
+wget "$SHARUN" -O ./sharun
 chmod +x ./lib4bin ./sharun
 HARD_LINKS=1 ./lib4bin ./bin/*
 rm -f ./lib4bin
