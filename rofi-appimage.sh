@@ -5,6 +5,7 @@ APPDIR="$APP.AppDir"
 SITE="davatorium/rofi"
 EXEC="$APP"
 export ARCH="$(uname -m)"
+export APPIMAGE_EXTRACT_AND_RUN=1
 APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
 SHARUN="https://bin.ajam.dev/$ARCH/sharun"
