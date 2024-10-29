@@ -55,6 +55,7 @@ CURRENTDIR="$(dirname "$(readlink -f "$0")")"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 export PATH="$CURRENTDIR/bin:$PATH"
 export XDG_DATA_DIRS="$CURRENTDIR/usr/share:/usr/share:$XDG_DATA_DIRS"
+export GIO_MODULE_DIR="$CURRENTDIR"
 
 GDK_HERE="$(find "$CURRENTDIR" -type d -regex '.*gdk.*loaders' -print -quit)"
 GDK_LOADER="$(find "$CURRENTDIR" -type f -regex '.*gdk.*loaders.cache' -print -quit)"
