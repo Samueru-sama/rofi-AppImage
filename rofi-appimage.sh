@@ -18,7 +18,7 @@ cd ./rofi
 meson --prefix "$CURRENTDIR/usr" . build
 meson compile -C build && meson install -C build
 cd ..
-sed -i '44,68d; s/DIRS=\${XDG_DATA_DIRS}//' ./usr/bin/rofi-theme-selector
+#sed -i '44,68d; s/DIRS=\${XDG_DATA_DIRS}//' ./usr/bin/rofi-theme-selector
 rm -rf ./rofi
 
 # ADD LIBRARIES
