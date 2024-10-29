@@ -32,6 +32,14 @@ ls
 HARD_LINKS=1 ./lib4bin ./bin/*
 rm -f ./lib4bin
 
+# DEPLOY GDK
+GDK_PATH="$(find / -type d -regex ".*/gdk-pixbuf-2.0" -print -quit)"
+cp -r "$GDK_PATH" ./shared/lib
+find ./shared/lib/gdk-pixbuf-2.0 -type f -name '*.so*' -exec ldd {} \; \
+	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -f {} ./shared/lib
+find ./shared/lib -type f -regex '.*gdk.*loaders.cache' \
+	-exec sed -i 's|/.*lib.*/gdk-pixbuf.*/.*/loaders/||g' {} \;
+
 # DESKTOP & ICON
 find ./ -type f -regex ".*/applications/.*\.desktop" -exec cp {} ./ \;
 rm -f ./rofi-theme-selector.desktop || true
