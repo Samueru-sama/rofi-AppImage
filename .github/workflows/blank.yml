@@ -20,7 +20,7 @@ jobs:
       run: |
         apk add coreutils bash wget git build-base meson glib-dev cairo-dev  \
           pango-dev libxkbcommon-dev libxcb-dev gdk-pixbuf-dev xcb-util-dev \
-          xcb-util-wm-dev xcb-util-xrm-dev xcb-util-cursor-dev librsvg-dev \
+          xcb-util-wm-dev xcb-util-xrm-dev xcb-util-cursor-dev \
           startup-notification-dev flex bison ronn cppcheck check-dev \
           xkeyboard-config-dev xcb-util-keysyms-dev desktop-file-utils
 
