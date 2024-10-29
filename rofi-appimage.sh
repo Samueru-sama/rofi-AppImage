@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -eu
 APP=rofi
 APPDIR="$APP.AppDir"
