@@ -55,6 +55,8 @@ DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 export PATH="$CURRENTDIR/bin:$PATH"
 export XDG_DATA_DIRS="$DATADIR:$XDG_DATA_DIRS"
 export GIO_MODULE_DIR="$CURRENTDIR"
+BIN="${ARGV0#./}"
+unset ARGV0
 
 GDK_HERE="$(find "$CURRENTDIR" -type d -regex '.*gdk.*loaders' -print -quit)"
 GDK_LOADER="$(find "$CURRENTDIR" -type f -regex '.*gdk.*loaders.cache' -print -quit)"
@@ -71,7 +73,9 @@ if [ ! -d "$DATADIR/rofi/themes" ]; then
 	fi
 fi
 
-if [ "$1" = "rofi-theme-selector" ]; then
+if [ -f "$CURRENTDIR/bin/$BIN" ]; then
+	exec "$CURRENTDIR/bin/$BIN" "$@"
+elif [ "$1" = "rofi-theme-selector" ]; then
 	shift
 	exec "$CURRENTDIR/bin/rofi-theme-selector" "$@"
 else
