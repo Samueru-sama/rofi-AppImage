@@ -88,7 +88,6 @@ export VERSION="$(./AppRun -v | awk 'FNR==1 {print $2; exit}')"
 cd ..
 
 # MAKE APPIAMGE WITH FUSE3 COMPATIBLE APPIMAGETOOL
-APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
 wget -q "$APPIMAGETOOL" -O ./appimagetool && chmod a+x ./appimagetool || exit 1
 
 ls
