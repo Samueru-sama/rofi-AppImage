@@ -69,7 +69,7 @@ if [ ! -d "$DATADIR/rofi/themes" ]; then
 	if ! cp -rn "$CURRENTDIR/usr/share/rofi/themes" "$DATADIR/rofi/themes"; then
 		echo "No rofi themes directory found"
 		echo "Something went wrong because the AppImage should have copied them"
-		echo "to "$DATADIR/rofi/themes""
+		echo "to \"$DATADIR/rofi/themes\""
 		notify-send "No rofi themes directory found"
 	fi
 fi
