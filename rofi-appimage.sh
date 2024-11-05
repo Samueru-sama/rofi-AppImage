@@ -83,6 +83,7 @@ else
 fi
 EOF
 chmod a+x ./AppRun
+rm -f ./shared/lib/lib.path || true # forces sharun to regenerate the file
 export VERSION="$(./AppRun -v | awk 'FNR==1 {print $2; exit}')"
 cd ..
 
