@@ -6,7 +6,7 @@ export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
 APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
-SHARUN="https://bin.ajam.dev/$ARCH/sharun"
+SHARUN="https://github.com/VHSgunzo/sharun/releases/download/v0.0.2/sharun-$ARCH"
 
 # CREATE DIRECTORIES
 mkdir -p ./"$APP/$APPDIR" && cd ./"$APP/$APPDIR" || exit 1
@@ -37,7 +37,6 @@ find ./shared/lib/gdk-pixbuf-2.0 -type f -name '*.so*' -exec ldd {} \; \
 	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -vn {} ./shared/lib
 find ./shared/lib -type f -regex '.*gdk.*loaders.cache' \
 	-exec sed -i 's|/.*lib.*/gdk-pixbuf.*/.*/loaders/||g' {} \;
-( cd ./shared/lib && find ./gdk-pixbuf-2.0 -type f -name '*.so*' -exec ln -s {} ./ \; )
 
 # DESKTOP & ICON
 find ./ -type f -regex ".*/applications/.*\.desktop" -exec cp {} ./ \;
@@ -84,6 +83,7 @@ else
 fi
 EOF
 chmod a+x ./AppRun
+rm -f ./shared/lib/lib.path || true # forces sharun to regenerate the file
 export VERSION="$(./AppRun -v | awk 'FNR==1 {print $2; exit}')"
 cd ..
 
