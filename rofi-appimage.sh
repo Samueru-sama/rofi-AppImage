@@ -100,10 +100,11 @@ llvm-objcopy --update-section=.upd_info=data.upd_info \
 printf 'AI\x02' | dd of=./uruntime bs=1 count=3 seek=8 conv=notrunc
 
 echo "Generating AppImage..."
-./uruntime --appimage-mksquashfs ./AppDir \
-	"$APP"-"$VERSION"-"$ARCH".AppImage \
-	-comp zstd -Xcompression-level 12   
-cat ./"$APP"-"$VERSION"-"$ARCH".AppImage >> ./uruntime 
+./uruntime --appimage-mksquashfs \
+	./AppDir ./AppDir.squashfs \
+	-comp zstd -Xcompression-level 22   
+cat ./AppDir.squashfs >> ./uruntime
+mv ./uruntime ./"$APP"-"$VERSION"-"$ARCH".AppImage
 
 echo "Generating zsync file..."
 zsyncmake *.AppImage -u *.AppImage
