@@ -26,7 +26,7 @@ rm -rf ./rofi
 mv ./usr/bin ./
 wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-./lib4bin -p -v -r -e -s ./bin/*
+./lib4bin -p -v -r -s ./bin/*
 rm -f ./lib4bin
 
 # Add gio modules
