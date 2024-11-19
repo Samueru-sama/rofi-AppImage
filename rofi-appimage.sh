@@ -105,12 +105,12 @@ echo "Generating AppImage..."
 	--no-history --no-create-timestamp \
 	--compression zstd:level=22 -S22 -B16 \
 	--header uruntime \
-	-i ./AppDir -o "$PACKAGE"-"$VERSION"-"$ARCH".AppImage
+	-i ./AppDir -o "$APP"-"$VERSION"-"$ARCH".AppImage
 
 echo "Generating zsync file..."
 zsyncmake *.AppImage -u *.AppImage
 
 mv ./*.AppImage* ../
 cd ..
-rm -rf ./"$PACKAGE"
+rm -rf ./"$APP"
 echo "All Done!"
