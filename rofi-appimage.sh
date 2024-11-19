@@ -1,17 +1,19 @@
 #!/bin/sh
+
 set -eu
+
 APP=rofi
-APPDIR="$APP.AppDir"
 export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
+
+UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
-SHARUN="https://github.com/VHSgunzo/sharun/releases/download/v0.0.2/sharun-$ARCH"
-URUNTIME=$(wget -q https://api.github.com/repos/VHSgunzo/uruntime/releases -O - \
-	| sed 's/[()",{} ]/\n/g' | grep -oi "https.*appimage.*dwarfs.*$ARCH$" | head -1)
+URUNTIME="$(wget -q https://api.github.com/repos/VHSgunzo/uruntime/releases -O - \
+	| sed 's/[()",{} ]/\n/g' | grep -oi "https.*appimage.*dwarfs.*$ARCH$" | head -1)"
 
 # CREATE DIRECTORIES
-mkdir -p ./"$APP/$APPDIR" 
-cd ./"$APP/$APPDIR"
+mkdir -p ./"$APP/AppDir" 
+cd ./"$APP/AppDir"
 
 # DOWNLOAD AND BUILD ROFI
 CURRENTDIR="$(dirname "$(readlink -f "$0")")" # DO NOT MOVE THIS
@@ -52,7 +54,7 @@ echo "Categories=Utility;" >> ./rofi.desktop
 
 # AppRun
 cat >> ./AppRun << 'EOF'
-#!/bin/sh
+#!/usr/bin/env sh
 CURRENTDIR="$(dirname "$(readlink -f "$0")")"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 export PATH="$CURRENTDIR/bin:$PATH"
