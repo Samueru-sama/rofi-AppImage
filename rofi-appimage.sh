@@ -106,8 +106,8 @@ echo "Generating AppImage..."
 cat ./AppDir.squashfs >> ./uruntime
 mv ./uruntime ./"$APP"-"$VERSION"-anylinux-"$ARCH".AppImage
 
-echo "Generating zsync file..."
-zsyncmake *.AppImage -u *.AppImage
+#echo "Generating zsync file..."
+#zsyncmake *.AppImage -u *.AppImage
 
 mv ./*.AppImage* ../
 cd ..
