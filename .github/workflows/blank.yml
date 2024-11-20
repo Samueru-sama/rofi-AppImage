@@ -1,4 +1,4 @@
-name: Your Appimage
+name: Appimage
 concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
@@ -23,7 +23,13 @@ jobs:
           xcb-util-wm-dev xcb-util-xrm-dev xcb-util-cursor-dev librsvg-dev \
           startup-notification-dev flex bison ronn cppcheck check-dev \
           xkeyboard-config-dev xcb-util-keysyms-dev desktop-file-utils \
-          patchelf
+          patchelf strace llvm17
+        
+        mkdir -p "$HOME"/.local/bin
+        wget "https://github.com/probonopd/static-tools/releases/download/continuous/zsyncmake-x86_64" \
+          -O "$HOME"/.local/bin/zsyncmake
+        chmod +x "$HOME"/.local/bin/zsyncmake
+        export PATH="$PATH:$HOME/.local/bin"
 
         chmod +x ./rofi-appimage.sh && ./rofi-appimage.sh
         mkdir dist

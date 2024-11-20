@@ -1,15 +1,19 @@
 #!/bin/sh
+
 set -eu
+
 APP=rofi
-APPDIR="$APP.AppDir"
 export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
-APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
+
+UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
-SHARUN="https://github.com/VHSgunzo/sharun/releases/download/v0.0.2/sharun-$ARCH"
+URUNTIME="$(wget -q https://api.github.com/repos/VHSgunzo/uruntime/releases -O - \
+	| sed 's/[()",{} ]/\n/g' | grep -oi "https.*appimage.*squashfs.*$ARCH$" | head -1)"
 
 # CREATE DIRECTORIES
-mkdir -p ./"$APP/$APPDIR" && cd ./"$APP/$APPDIR" || exit 1
+mkdir -p ./"$APP/AppDir" 
+cd ./"$APP/AppDir"
 
 # DOWNLOAD AND BUILD ROFI
 CURRENTDIR="$(dirname "$(readlink -f "$0")")" # DO NOT MOVE THIS
@@ -23,10 +27,12 @@ rm -rf ./rofi
 # ADD LIBRARIES
 mv ./usr/bin ./
 wget "$LIB4BN" -O ./lib4bin
-wget "$SHARUN" -O ./sharun
-chmod +x ./lib4bin ./sharun
-HARD_LINKS=1 ./lib4bin ./bin/*
+chmod +x ./lib4bin
+./lib4bin -p -v -r -s ./bin/*
 rm -f ./lib4bin
+
+# Add gio modules
+cp -rv /usr/lib/gio ./shared/lib
 
 # DEPLOY GDK
 echo "Deploying gdk..."
@@ -48,20 +54,15 @@ echo "Categories=Utility;" >> ./rofi.desktop
 
 # AppRun
 cat >> ./AppRun << 'EOF'
-#!/bin/sh
+#!/usr/bin/env sh
 CURRENTDIR="$(dirname "$(readlink -f "$0")")"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 export PATH="$CURRENTDIR/bin:$PATH"
 [ -z "$XDG_DATA_DIRS" ] && XDG_DATA_DIRS="/usr/local/share:/usr/share"
 export XDG_DATA_DIRS="$DATADIR:$XDG_DATA_DIRS"
-export GIO_MODULE_DIR="$CURRENTDIR"
+export GIO_MODULE_DIR="$CURRENTDIR/shared/lib/gio/modules"
 BIN="${ARGV0#./}"
 unset ARGV0
-
-GDK_HERE="$(find "$CURRENTDIR" -type d -regex '.*gdk.*loaders' -print -quit)"
-GDK_LOADER="$(find "$CURRENTDIR" -type f -regex '.*gdk.*loaders.cache' -print -quit)"
-export GDK_PIXBUF_MODULEDIR="$GDK_HERE"
-export GDK_PIXBUF_MODULE_FILE="$GDK_LOADER"
 
 if [ ! -d "$DATADIR/rofi/themes" ]; then
 	mkdir -p "$DATADIR/rofi" || exit 1
@@ -83,17 +84,32 @@ else
 fi
 EOF
 chmod a+x ./AppRun
-rm -f ./shared/lib/lib.path || true # forces sharun to regenerate the file
+./sharun -g
 export VERSION="$(./AppRun -v | awk 'FNR==1 {print $2; exit}')"
+
+# MAKE APPIMAGE WITH URUNTIME
 cd ..
+wget -q "$URUNTIME" -O ./uruntime
+chmod +x ./uruntime
 
-# MAKE APPIAMGE WITH FUSE3 COMPATIBLE APPIMAGETOOL
-wget -q "$APPIMAGETOOL" -O ./appimagetool && chmod a+x ./appimagetool || exit 1
+#Add udpate info to runtime
+echo "Adding update information \"$UPINFO\" to runtime..."
+printf "$UPINFO" > data.upd_info
+llvm-objcopy --update-section=.upd_info=data.upd_info \
+	--set-section-flags=.upd_info=noload,readonly ./uruntime
+printf 'AI\x02' | dd of=./uruntime bs=1 count=3 seek=8 conv=notrunc
 
-ls
-# Do the thing!
-./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 22 \
-	-n -u "gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|rofi-AppImage|continuous|*$ARCH.AppImage.zsync" \
-	./"$APP".AppDir Rofi-"$VERSION"-"$ARCH".AppImage
-[ -n "$APP" ] && mv ./*.AppImage* .. && cd .. && rm -rf ./"$APP" || exit 1
+echo "Generating AppImage..."
+./uruntime --appimage-mksquashfs \
+	./AppDir ./AppDir.squashfs \
+	-comp zstd -Xcompression-level 22   
+cat ./AppDir.squashfs >> ./uruntime
+mv ./uruntime ./"$APP"-"$VERSION"-anylinux-"$ARCH".AppImage
+
+#echo "Generating zsync file..."
+#zsyncmake *.AppImage -u *.AppImage
+
+mv ./*.AppImage* ../
+cd ..
+rm -rf ./"$APP"
 echo "All Done!"
