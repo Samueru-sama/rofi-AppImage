@@ -104,7 +104,7 @@ echo "Generating AppImage..."
 	./AppDir ./AppDir.squashfs \
 	-comp zstd -Xcompression-level 22   
 cat ./AppDir.squashfs >> ./uruntime
-mv ./uruntime ./"$APP"-"$VERSION"-"$ARCH".AppImage
+mv ./uruntime ./"$APP"-"$VERSION"-anylinux-"$ARCH".AppImage
 
 echo "Generating zsync file..."
 zsyncmake *.AppImage -u *.AppImage
