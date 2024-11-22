@@ -33,6 +33,8 @@ rm -f ./lib4bin
 
 # Add gio modules
 cp -rv /usr/lib/gio ./shared/lib
+# sharun will not add empty dirs to libs.path
+[ -n "$(ls -A ./shared/lib/gio/modules)" ] || touch ./shared/lib/gio/modules/kek.so
 
 # DEPLOY GDK
 echo "Deploying gdk..."
@@ -60,7 +62,6 @@ DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 export PATH="$CURRENTDIR/bin:$PATH"
 [ -z "$XDG_DATA_DIRS" ] && XDG_DATA_DIRS="/usr/local/share:/usr/share"
 export XDG_DATA_DIRS="$DATADIR:$XDG_DATA_DIRS"
-export GIO_MODULE_DIR="$CURRENTDIR/shared/lib/gio/modules"
 BIN="${ARGV0#./}"
 unset ARGV0
 
