@@ -22,14 +22,7 @@ jobs:
           pango-dev libxkbcommon-dev libxcb-dev gdk-pixbuf-dev xcb-util-dev \
           xcb-util-wm-dev xcb-util-xrm-dev xcb-util-cursor-dev librsvg-dev \
           startup-notification-dev flex bison ronn cppcheck check-dev \
-          xkeyboard-config-dev xcb-util-keysyms-dev desktop-file-utils \
-          patchelf strace llvm17
-        
-        mkdir -p "$HOME"/.local/bin
-        wget "https://github.com/probonopd/static-tools/releases/download/continuous/zsyncmake-x86_64" \
-          -O "$HOME"/.local/bin/zsyncmake
-        chmod +x "$HOME"/.local/bin/zsyncmake
-        export PATH="$PATH:$HOME/.local/bin"
+          xkeyboard-config-dev xcb-util-keysyms-dev patchelf strace
 
         chmod +x ./rofi-appimage.sh && ./rofi-appimage.sh
         mkdir dist
