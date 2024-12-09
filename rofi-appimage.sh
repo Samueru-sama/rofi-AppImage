@@ -6,10 +6,9 @@ APP=rofi
 export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
 
-UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
+UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
-URUNTIME="$(wget -q https://api.github.com/repos/VHSgunzo/uruntime/releases -O - \
-	| sed 's/[()",{} ]/\n/g' | grep -oi "https.*appimage.*squashfs.*$ARCH$" | head -1)"
+APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
 
 # CREATE DIRECTORIES
 mkdir -p ./"$APP/AppDir" 
@@ -87,28 +86,16 @@ EOF
 chmod a+x ./AppRun
 ./sharun -g
 export VERSION="$(./AppRun -v | awk 'FNR==1 {print $2; exit}')"
+echo "$VERSION" > ~/version
 
-# MAKE APPIMAGE WITH URUNTIME
+# MAKE APPIMAGE WITH FUSE3 COMPATIBLE APPIMAGETOOL
 cd ..
-wget -q "$URUNTIME" -O ./uruntime
-chmod +x ./uruntime
-
-#Add udpate info to runtime
-echo "Adding update information \"$UPINFO\" to runtime..."
-printf "$UPINFO" > data.upd_info
-llvm-objcopy --update-section=.upd_info=data.upd_info \
-	--set-section-flags=.upd_info=noload,readonly ./uruntime
-printf 'AI\x02' | dd of=./uruntime bs=1 count=3 seek=8 conv=notrunc
-
+wget -q "$APPIMAGETOOL" -O ./appimagetool
+chmod +x ./appimagetool
 echo "Generating AppImage..."
-./uruntime --appimage-mksquashfs \
-	./AppDir ./AppDir.squashfs \
-	-comp zstd -Xcompression-level 22   
-cat ./AppDir.squashfs >> ./uruntime
-mv ./uruntime ./"$APP"-"$VERSION"-anylinux-"$ARCH".AppImage
-
-#echo "Generating zsync file..."
-#zsyncmake *.AppImage -u *.AppImage
+./appimagetool --comp zstd \
+	--mksquashfs-opt -Xcompression-level --mksquashfs-opt 22 \
+	-n -u "$UPINFO" "$PWD"/AppDir "$PWD"/"$APP"-"$VERSION"-anylinux-"$ARCH".AppImage
 
 mv ./*.AppImage* ../
 cd ..
